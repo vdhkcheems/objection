@@ -40,3 +40,19 @@ This project is in early development. The current focus is building the foundati
 5. LLM-based dialogue agents after the core rules are working
 
 See the full phased roadmap in [docs/implementation-plan.md](docs/implementation-plan.md).
+
+## Local Development
+
+Phase 0 uses a Next.js frontend and FastAPI backend.
+
+```bash
+npm install
+cd apps/api
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+cd ../..
+npm run dev
+```
+
+The web app runs at [http://localhost:3000](http://localhost:3000).
+The API health endpoint runs at [http://localhost:8000/health](http://localhost:8000/health).
