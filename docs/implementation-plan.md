@@ -52,6 +52,7 @@ Goal: define the truth layer.
 Build:
 
 - JSON/YAML case file format
+- Case IDs must be UUIDs (not human-readable names)
 - Pydantic models for validation
 - One handcrafted demo case
 - Evidence model

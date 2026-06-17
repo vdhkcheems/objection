@@ -9,11 +9,64 @@ type HealthResponse = {
   status: string;
 };
 
+type CaseSummary = {
+  id: string;
+  title: string;
+  summary: string;
+  status: string;
+  charge_count: number;
+  witness_count: number;
+  evidence_count: number;
+};
+
+type CaseOverview = {
+  id: string;
+  title: string;
+  summary: string;
+  jurisdiction: string;
+  status: string;
+  player_roles: string[];
+  charges: {
+    id: string;
+    name: string;
+    description: string;
+    legal_elements: {
+      id: string;
+      name: string;
+      description: string;
+    }[];
+  }[];
+  witnesses: {
+    id: string;
+    name: string;
+    role: string;
+    bio: string;
+    statement_count: number;
+  }[];
+  evidence: {
+    id: string;
+    title: string;
+    type: string;
+    description: string;
+    admissibility_status: string | null;
+  }[];
+  timeline: {
+    id: string;
+    sequence: number;
+    timestamp: string;
+    description: string;
+  }[];
+};
+
+type CaseStatus = "loading" | "loaded" | "unavailable";
+
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
 export default function Home() {
   const [healthStatus, setHealthStatus] = useState<HealthStatus>("checking");
   const [serviceName, setServiceName] = useState("objection-api");
+  const [caseStatus, setCaseStatus] = useState<CaseStatus>("loading");
+  const [caseOverview, setCaseOverview] = useState<CaseOverview | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -43,11 +96,61 @@ export default function Home() {
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadCase() {
+      try {
+        const casesResponse = await fetch(`${apiBaseUrl}/cases`, {
+          signal: controller.signal,
+        });
+
+        if (!casesResponse.ok) {
+          throw new Error("Case list unavailable");
+        }
+
+        const cases = (await casesResponse.json()) as CaseSummary[];
+        const selectedCase = cases[0];
+
+        if (!selectedCase) {
+          throw new Error("No cases available");
+        }
+
+        const overviewResponse = await fetch(
+          `${apiBaseUrl}/cases/${selectedCase.id}/overview`,
+          { signal: controller.signal },
+        );
+
+        if (!overviewResponse.ok) {
+          throw new Error("Case overview unavailable");
+        }
+
+        const overview = (await overviewResponse.json()) as CaseOverview;
+        setCaseOverview(overview);
+        setCaseStatus("loaded");
+      } catch {
+        if (!controller.signal.aborted) {
+          setCaseStatus("unavailable");
+        }
+      }
+    }
+
+    loadCase();
+
+    return () => controller.abort();
+  }, []);
+
   const statusCopy = {
     checking: "Checking backend",
     connected: "Backend connected",
     offline: "Backend unavailable",
   }[healthStatus];
+
+  const caseStatusCopy = {
+    loading: "Loading case file",
+    loaded: "Locked case loaded",
+    unavailable: "Case file unavailable",
+  }[caseStatus];
 
   return (
     <main className="min-h-screen bg-[#f5f2eb] text-[#1f2528]">
@@ -86,24 +189,44 @@ export default function Home() {
                   Superior Court
                 </span>
                 <span className="rounded-sm bg-[#7b1f2a] px-3 py-1 text-sm font-semibold">
-                  Phase 0
+                  Phase 1
                 </span>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-3">
-                <CourtSeat title="Judge" name="Awaiting session" />
-                <CourtSeat title="Witness" name="No witness called" />
-                <CourtSeat title="Counsel" name="Choose role later" />
+                <CourtSeat
+                  title="Jurisdiction"
+                  name={caseOverview?.jurisdiction ?? "Awaiting case file"}
+                />
+                <CourtSeat
+                  title="Witnesses"
+                  name={
+                    caseOverview
+                      ? `${caseOverview.witnesses.length} public witnesses`
+                      : "Pending"
+                  }
+                />
+                <CourtSeat
+                  title="Counsel"
+                  name={
+                    caseOverview
+                      ? caseOverview.player_roles.join(" / ")
+                      : "Choose role later"
+                  }
+                />
               </div>
             </div>
 
             <div className="mt-10 border-t border-white/20 pt-6">
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#d9c28f]">
-                Current Objective
+                Locked Case File
               </p>
               <p className="mt-3 max-w-2xl text-2xl font-semibold leading-tight sm:text-4xl">
-                Establish the foundation: web shell online, API reachable, facts
-                still locked away.
+                {caseOverview?.title ?? "The court is waiting for the case file."}
+              </p>
+              <p className="mt-4 max-w-3xl text-base leading-7 text-white/80">
+                {caseOverview?.summary ??
+                  "Public case details will appear here once the backend responds."}
               </p>
             </div>
           </section>
@@ -111,9 +234,19 @@ export default function Home() {
           <aside className="grid gap-5">
             <Panel title="Case File">
               <dl className="grid gap-3 text-sm">
-                <InfoRow label="Demo case" value="Not loaded" />
-                <InfoRow label="Evidence" value="Pending Phase 1" />
-                <InfoRow label="Witnesses" value="Pending Phase 1" />
+                <InfoRow label="Status" value={caseStatusCopy} />
+                <InfoRow
+                  label="Charges"
+                  value={caseOverview ? `${caseOverview.charges.length}` : "-"}
+                />
+                <InfoRow
+                  label="Evidence"
+                  value={caseOverview ? `${caseOverview.evidence.length}` : "-"}
+                />
+                <InfoRow
+                  label="Timeline"
+                  value={caseOverview ? `${caseOverview.timeline.length}` : "-"}
+                />
               </dl>
             </Panel>
 
@@ -125,17 +258,91 @@ export default function Home() {
               </dl>
             </Panel>
 
-            <Panel title="Transcript">
-              <div className="space-y-3 text-sm leading-6 text-[#3d4548]">
-                <p>
-                  <strong>Clerk:</strong> The court recognizes a new project
-                  foundation.
-                </p>
-                <p>
-                  <strong>Judge:</strong> Proceed when the backend connection is
-                  confirmed.
-                </p>
-              </div>
+            <Panel title="Charges">
+              {caseOverview ? (
+                <div className="space-y-4">
+                  {caseOverview.charges.map((charge) => (
+                    <section key={charge.id} className="border-b border-[#eadfc9] pb-4 last:border-0 last:pb-0">
+                      <h3 className="text-base font-bold text-[#1f2528]">
+                        {charge.name}
+                      </h3>
+                      <p className="mt-2 text-sm leading-6 text-[#3d4548]">
+                        {charge.description}
+                      </p>
+                      <ul className="mt-3 grid gap-2 text-sm text-[#5d6669]">
+                        {charge.legal_elements.map((element) => (
+                          <li key={element.id}>
+                            <strong className="text-[#1f2528]">
+                              {element.name}:
+                            </strong>{" "}
+                            {element.description}
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ))}
+                </div>
+              ) : (
+                <EmptyState status={caseStatus} />
+              )}
+            </Panel>
+
+            <Panel title="Witnesses">
+              {caseOverview ? (
+                <div className="grid gap-3">
+                  {caseOverview.witnesses.map((witness) => (
+                    <CompactItem
+                      key={witness.id}
+                      title={witness.name}
+                      meta={`${witness.role} | ${witness.statement_count} public statements`}
+                      description={witness.bio}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <EmptyState status={caseStatus} />
+              )}
+            </Panel>
+
+            <Panel title="Evidence">
+              {caseOverview ? (
+                <div className="grid gap-3">
+                  {caseOverview.evidence.map((item) => (
+                    <CompactItem
+                      key={item.id}
+                      title={item.title}
+                      meta={`${item.type} | ${
+                        item.admissibility_status ?? "Admissibility hidden"
+                      }`}
+                      description={item.description}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <EmptyState status={caseStatus} />
+              )}
+            </Panel>
+
+            <Panel title="Timeline">
+              {caseOverview ? (
+                <ol className="grid gap-3">
+                  {caseOverview.timeline.map((event) => (
+                    <li
+                      key={event.id}
+                      className="grid grid-cols-[4.5rem_1fr] gap-3 border-b border-[#eadfc9] pb-3 text-sm last:border-0 last:pb-0"
+                    >
+                      <span className="font-bold text-[#7b1f2a]">
+                        {event.timestamp}
+                      </span>
+                      <span className="leading-6 text-[#3d4548]">
+                        {event.description}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <EmptyState status={caseStatus} />
+              )}
             </Panel>
           </aside>
         </div>
@@ -169,6 +376,38 @@ function Panel({
       </h2>
       <div className="mt-4">{children}</div>
     </section>
+  );
+}
+
+function CompactItem({
+  title,
+  meta,
+  description,
+}: {
+  title: string;
+  meta: string;
+  description: string;
+}) {
+  return (
+    <article className="border-b border-[#eadfc9] pb-3 last:border-0 last:pb-0">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+        <h3 className="text-base font-bold text-[#1f2528]">{title}</h3>
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7b1f2a]">
+          {meta}
+        </p>
+      </div>
+      <p className="mt-2 text-sm leading-6 text-[#3d4548]">{description}</p>
+    </article>
+  );
+}
+
+function EmptyState({ status }: { status: CaseStatus }) {
+  return (
+    <p className="text-sm leading-6 text-[#5d6669]">
+      {status === "loading"
+        ? "Loading public case data."
+        : "Public case data is unavailable."}
+    </p>
   );
 }
 

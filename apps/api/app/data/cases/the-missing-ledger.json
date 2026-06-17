@@ -1,0 +1,249 @@
+{
+  "id": "d6f8a523-4163-4c94-a83b-b9c7f11e9a02",
+  "title": "The Missing Ledger",
+  "summary": "A workplace theft case over a missing antique ledger from the private office of Hartwell Imports.",
+  "jurisdiction": "Fictional Superior Court",
+  "status": "ready",
+  "player_roles": ["defense", "prosecution"],
+  "charges": [
+    {
+      "id": "charge-theft",
+      "name": "Theft of company property",
+      "description": "The accused is charged with knowingly taking a valuable company ledger without authorization.",
+      "legal_elements": [
+        {
+          "id": "element-property",
+          "name": "Property of another",
+          "description": "The ledger belonged to Hartwell Imports."
+        },
+        {
+          "id": "element-taking",
+          "name": "Unauthorized taking",
+          "description": "The ledger was removed from the locked office without permission."
+        },
+        {
+          "id": "element-intent",
+          "name": "Intent to deprive",
+          "description": "The accused intended to keep or conceal the ledger from its owner."
+        },
+        {
+          "id": "element-hidden-motive",
+          "name": "HIDDEN_FRAMEUP_ELEMENT_441",
+          "description": "HIDDEN_FRAMEUP_ELEMENT_DESCRIPTION_441",
+          "visibility": "hidden"
+        }
+      ]
+    }
+  ],
+  "witnesses": [
+    {
+      "id": "witness-mara-vale",
+      "name": "Mara Vale",
+      "role": "Office manager",
+      "bio": "Managed the front office and kept the key cabinet during the evening inventory shift.",
+      "statements": [
+        {
+          "id": "statement-mara-key-cabinet",
+          "summary": "I saw the accused sign out the office key shortly before closing.",
+          "evidence_links": ["evidence-key-log"],
+          "timeline_event_links": ["event-key-signout"]
+        },
+        {
+          "id": "statement-mara-locked-up",
+          "summary": "I locked the office after discovering the ledger was gone.",
+          "timeline_event_links": ["event-ledger-missing"]
+        },
+        {
+          "id": "statement-mara-hidden-access",
+          "summary": "I admitted I had access to a backup key. HIDDEN_MARA_ADMITTED_BACKUP_KEY_771",
+          "visibility": "hidden",
+          "evidence_links": ["evidence-backup-key"],
+          "timeline_event_links": ["event-backup-key-used"]
+        }
+      ]
+    },
+    {
+      "id": "witness-daniel-cross",
+      "name": "Daniel Cross",
+      "role": "Night security guard",
+      "bio": "Watched the rear corridor cameras and logged after-hours movement through the loading entrance.",
+      "statements": [
+        {
+          "id": "statement-daniel-hallway",
+          "summary": "I saw a person in a dark coat pass the office corridor near 7:15 PM.",
+          "evidence_links": ["evidence-security-still"],
+          "timeline_event_links": ["event-corridor-sighting"]
+        },
+        {
+          "id": "statement-daniel-camera-gap",
+          "summary": "I noticed the rear camera feed cut out for several minutes during that same hour.",
+          "evidence_links": ["evidence-security-still"],
+          "timeline_event_links": ["event-camera-gap"]
+        },
+        {
+          "id": "statement-daniel-hidden-id",
+          "summary": "I recognized Mara in the corridor. HIDDEN_DANIEL_RECOGNIZED_MARA_882",
+          "visibility": "hidden",
+          "timeline_event_links": ["event-corridor-sighting"]
+        }
+      ]
+    },
+    {
+      "id": "witness-eli-porter",
+      "name": "Eli Porter",
+      "role": "Accused junior clerk",
+      "bio": "A junior clerk who handled invoice corrections and had been asked to retrieve shipping records that evening.",
+      "statements": [
+        {
+          "id": "statement-eli-records",
+          "summary": "I entered the office only to look for a shipping record my supervisor requested.",
+          "timeline_event_links": ["event-key-signout"]
+        },
+        {
+          "id": "statement-eli-left-empty",
+          "summary": "I left the office empty-handed before the ledger was reported missing.",
+          "evidence_links": ["evidence-security-still"],
+          "timeline_event_links": ["event-eli-exits"]
+        },
+        {
+          "id": "statement-eli-hidden-ledger",
+          "summary": "I saw the ledger on the desk before I left. HIDDEN_ELI_SAW_LEDGER_ON_DESK_393",
+          "visibility": "hidden",
+          "timeline_event_links": ["event-eli-exits"]
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-key-log",
+      "title": "Key cabinet sign-out log",
+      "type": "document",
+      "description": "A paper log showing the office key signed out under Eli Porter's initials at 6:48 PM.",
+      "admissibility_status": "Marked for identification",
+      "witness_links": ["witness-mara-vale", "witness-eli-porter"],
+      "timeline_event_links": ["event-key-signout"],
+      "witness_statement_links": ["statement-mara-key-cabinet"]
+    },
+    {
+      "id": "evidence-security-still",
+      "title": "Rear corridor security still",
+      "type": "image",
+      "description": "A grainy still from the rear corridor camera showing a dark-coated figure outside the office hall.",
+      "admissibility_status": "Pending foundation",
+      "witness_links": ["witness-daniel-cross"],
+      "timeline_event_links": ["event-corridor-sighting", "event-camera-gap"],
+      "witness_statement_links": ["statement-daniel-hallway", "statement-daniel-camera-gap"]
+    },
+    {
+      "id": "evidence-inventory-email",
+      "title": "Inventory correction email",
+      "type": "email",
+      "description": "An email asking Eli to find a shipping record from the private office before the next morning.",
+      "admissibility_status": "Admissible as business record",
+      "witness_links": ["witness-eli-porter"],
+      "timeline_event_links": ["event-email-request"],
+      "witness_statement_links": ["statement-eli-records"]
+    },
+    {
+      "id": "evidence-ledger-appraisal",
+      "title": "Ledger appraisal sheet",
+      "type": "document",
+      "description": "A valuation sheet describing the missing ledger as a rare import ledger worth several thousand dollars.",
+      "admissibility_status": "Admissible if authenticated",
+      "timeline_event_links": ["event-ledger-missing"]
+    },
+    {
+      "id": "evidence-backup-key",
+      "title": "HIDDEN_BACKUP_KEY_FOUND_119",
+      "type": "physical",
+      "description": "HIDDEN_BACKUP_KEY_DESCRIPTION_119",
+      "visibility": "hidden",
+      "admissibility_status": "HIDDEN_BACKUP_KEY_STATUS_119",
+      "admissibility_visibility": "hidden",
+      "witness_links": ["witness-mara-vale"],
+      "timeline_event_links": ["event-backup-key-used"],
+      "witness_statement_links": ["statement-mara-hidden-access"]
+    }
+  ],
+  "timeline": [
+    {
+      "id": "event-email-request",
+      "sequence": 1,
+      "timestamp": "6:22 PM",
+      "description": "Eli receives an email asking him to locate an old shipping record before morning.",
+      "evidence_links": ["evidence-inventory-email"],
+      "witness_links": ["witness-eli-porter"]
+    },
+    {
+      "id": "event-key-signout",
+      "sequence": 2,
+      "timestamp": "6:48 PM",
+      "description": "The private office key is signed out from the front key cabinet.",
+      "evidence_links": ["evidence-key-log"],
+      "witness_links": ["witness-mara-vale", "witness-eli-porter"]
+    },
+    {
+      "id": "event-eli-exits",
+      "sequence": 3,
+      "timestamp": "7:04 PM",
+      "description": "Eli is recorded leaving the private office corridor.",
+      "evidence_links": ["evidence-security-still"],
+      "witness_links": ["witness-eli-porter"]
+    },
+    {
+      "id": "event-corridor-sighting",
+      "sequence": 4,
+      "timestamp": "7:15 PM",
+      "description": "A dark-coated figure appears in the rear corridor near the office hall.",
+      "evidence_links": ["evidence-security-still"],
+      "witness_links": ["witness-daniel-cross"]
+    },
+    {
+      "id": "event-camera-gap",
+      "sequence": 5,
+      "timestamp": "7:18 PM",
+      "description": "The rear corridor camera feed cuts out for several minutes.",
+      "evidence_links": ["evidence-security-still"],
+      "witness_links": ["witness-daniel-cross"]
+    },
+    {
+      "id": "event-ledger-missing",
+      "sequence": 6,
+      "timestamp": "7:32 PM",
+      "description": "Mara reports the antique ledger missing from the private office.",
+      "evidence_links": ["evidence-ledger-appraisal"],
+      "witness_links": ["witness-mara-vale"]
+    },
+    {
+      "id": "event-backup-key-used",
+      "sequence": 7,
+      "timestamp": "7:11 PM",
+      "description": "HIDDEN_BACKUP_KEY_USED_EVENT_220",
+      "visibility": "hidden",
+      "evidence_links": ["evidence-backup-key"],
+      "witness_links": ["witness-mara-vale"]
+    }
+  ],
+  "contradictions": [
+    {
+      "id": "contradiction-key-log",
+      "summary": "HIDDEN_CONTRADICTION_KEY_LOG_515",
+      "visibility": "hidden",
+      "witness_statement_links": ["statement-mara-key-cabinet", "statement-mara-hidden-access"],
+      "evidence_links": ["evidence-key-log", "evidence-backup-key"],
+      "timeline_event_links": ["event-key-signout", "event-backup-key-used"],
+      "legal_element_links": ["element-taking"]
+    },
+    {
+      "id": "contradiction-camera-gap",
+      "summary": "HIDDEN_CONTRADICTION_CAMERA_GAP_616",
+      "visibility": "hidden",
+      "witness_statement_links": ["statement-daniel-camera-gap", "statement-daniel-hidden-id"],
+      "evidence_links": ["evidence-security-still"],
+      "timeline_event_links": ["event-corridor-sighting", "event-camera-gap"],
+      "legal_element_links": ["element-intent"]
+    }
+  ],
+  "internal_notes": "INTERNAL_LEDGER_FRAMEUP_NOTE_909"
+}
