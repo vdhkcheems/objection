@@ -7,6 +7,8 @@ from app.main import app
 
 
 client = TestClient(app)
+CASE_ID = "d6f8a523-4163-4c94-a83b-b9c7f11e9a02"
+MISSING_CASE_ID = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
 
 HIDDEN_STRINGS = [
     "HIDDEN_FRAMEUP_ELEMENT_441",
@@ -34,7 +36,7 @@ def test_health_still_returns_ok() -> None:
 def test_cases_returns_demo_case_safely() -> None:
     payload = _json(client.get("/cases"))
 
-    assert payload[0]["id"] == "the-missing-ledger"
+    assert payload[0]["id"] == CASE_ID
     assert payload[0]["title"] == "The Missing Ledger"
     assert payload[0]["charge_count"] == 1
     assert payload[0]["witness_count"] == 3
@@ -43,7 +45,7 @@ def test_cases_returns_demo_case_safely() -> None:
 
 
 def test_overview_returns_public_case_data_only() -> None:
-    payload = _json(client.get("/cases/the-missing-ledger/overview"))
+    payload = _json(client.get(f"/cases/{CASE_ID}/overview"))
 
     assert payload["title"] == "The Missing Ledger"
     assert len(payload["charges"][0]["legal_elements"]) == 3
@@ -56,7 +58,7 @@ def test_overview_returns_public_case_data_only() -> None:
 
 
 def test_witness_detail_returns_public_statements_only() -> None:
-    payload = _json(client.get("/cases/the-missing-ledger/witnesses/witness-mara-vale"))
+    payload = _json(client.get(f"/cases/{CASE_ID}/witnesses/witness-mara-vale"))
 
     assert payload["id"] == "witness-mara-vale"
     assert [statement["id"] for statement in payload["statements"]] == [
@@ -67,9 +69,7 @@ def test_witness_detail_returns_public_statements_only() -> None:
 
 
 def test_evidence_detail_returns_public_links_only() -> None:
-    payload = _json(
-        client.get("/cases/the-missing-ledger/evidence/evidence-security-still")
-    )
+    payload = _json(client.get(f"/cases/{CASE_ID}/evidence/evidence-security-still"))
 
     assert payload["id"] == "evidence-security-still"
     assert payload["admissibility_status"] == "Pending foundation"
@@ -81,11 +81,9 @@ def test_evidence_detail_returns_public_links_only() -> None:
 
 
 def test_unknown_resources_return_404() -> None:
-    assert client.get("/cases/not-real/overview").status_code == 404
-    assert (
-        client.get("/cases/the-missing-ledger/witnesses/not-real").status_code == 404
-    )
-    assert client.get("/cases/the-missing-ledger/evidence/not-real").status_code == 404
+    assert client.get(f"/cases/{MISSING_CASE_ID}/overview").status_code == 404
+    assert client.get(f"/cases/{CASE_ID}/witnesses/not-real").status_code == 404
+    assert client.get(f"/cases/{CASE_ID}/evidence/not-real").status_code == 404
 
 
 def _json(response) -> Any:

@@ -2,6 +2,7 @@ import json
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
+from uuid import UUID
 
 from pydantic import ValidationError
 
@@ -19,10 +20,10 @@ class CaseRepository:
     def list_cases(self) -> list[dict[str, Any]]:
         return [self._case_summary(case_file) for case_file in self._load_cases()]
 
-    def get_public_overview(self, case_id: str) -> dict[str, Any]:
+    def get_public_overview(self, case_id: UUID) -> dict[str, Any]:
         case_file = self.get_case(case_id)
         return {
-            "id": case_file.id,
+            "id": str(case_file.id),
             "title": case_file.title,
             "summary": case_file.summary,
             "jurisdiction": case_file.jurisdiction,
@@ -83,7 +84,7 @@ class CaseRepository:
             ],
         }
 
-    def get_public_witness(self, case_id: str, witness_id: str) -> dict[str, Any]:
+    def get_public_witness(self, case_id: UUID, witness_id: str) -> dict[str, Any]:
         case_file = self.get_case(case_id)
         witness = next(
             (
@@ -123,7 +124,7 @@ class CaseRepository:
             ],
         }
 
-    def get_public_evidence(self, case_id: str, evidence_id: str) -> dict[str, Any]:
+    def get_public_evidence(self, case_id: UUID, evidence_id: str) -> dict[str, Any]:
         case_file = self.get_case(case_id)
         evidence = next(
             (
@@ -171,7 +172,7 @@ class CaseRepository:
             ],
         }
 
-    def get_case(self, case_id: str) -> CaseFile:
+    def get_case(self, case_id: UUID) -> CaseFile:
         for case_file in self._load_cases():
             if case_file.id == case_id:
                 return case_file
@@ -195,7 +196,7 @@ class CaseRepository:
             for path in sorted(self.case_dir.glob("*.json"))
             if path.is_file()
         ]
-        case_ids: set[str] = set()
+        case_ids: set[UUID] = set()
         for case_file in cases:
             if case_file.id in case_ids:
                 raise ValueError(f"Duplicate case id: {case_file.id}")
@@ -204,7 +205,7 @@ class CaseRepository:
 
     def _case_summary(self, case_file: CaseFile) -> dict[str, Any]:
         return {
-            "id": case_file.id,
+            "id": str(case_file.id),
             "title": case_file.title,
             "summary": case_file.summary,
             "status": case_file.status,

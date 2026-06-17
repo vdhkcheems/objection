@@ -1,4 +1,5 @@
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -20,7 +21,7 @@ def list_cases(
 
 @router.get("/{case_id}/overview")
 def get_case_overview(
-    case_id: str,
+    case_id: UUID,
     repository: Annotated[CaseRepository, Depends(get_case_repository)],
 ) -> dict:
     try:
@@ -31,7 +32,7 @@ def get_case_overview(
 
 @router.get("/{case_id}/witnesses/{witness_id}")
 def get_witness_detail(
-    case_id: str,
+    case_id: UUID,
     witness_id: str,
     repository: Annotated[CaseRepository, Depends(get_case_repository)],
 ) -> dict:
@@ -43,7 +44,7 @@ def get_witness_detail(
 
 @router.get("/{case_id}/evidence/{evidence_id}")
 def get_evidence_detail(
-    case_id: str,
+    case_id: UUID,
     evidence_id: str,
     repository: Annotated[CaseRepository, Depends(get_case_repository)],
 ) -> dict:

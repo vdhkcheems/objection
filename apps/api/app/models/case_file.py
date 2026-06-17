@@ -1,4 +1,5 @@
 from enum import Enum
+from uuid import UUID
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -73,7 +74,7 @@ class Contradiction(BaseModel):
 
 
 class CaseFile(BaseModel):
-    id: str
+    id: UUID
     title: str
     summary: str
     jurisdiction: str

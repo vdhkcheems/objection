@@ -1,5 +1,5 @@
 {
-  "id": "the-missing-ledger",
+  "id": "d6f8a523-4163-4c94-a83b-b9c7f11e9a02",
   "title": "The Missing Ledger",
   "summary": "A workplace theft case over a missing antique ledger from the private office of Hartwell Imports.",
   "jurisdiction": "Fictional Superior Court",
@@ -44,18 +44,18 @@
       "statements": [
         {
           "id": "statement-mara-key-cabinet",
-          "summary": "Mara says the accused signed out the office key shortly before closing.",
+          "summary": "I saw the accused sign out the office key shortly before closing.",
           "evidence_links": ["evidence-key-log"],
           "timeline_event_links": ["event-key-signout"]
         },
         {
           "id": "statement-mara-locked-up",
-          "summary": "Mara says she locked the office after discovering the ledger was gone.",
+          "summary": "I locked the office after discovering the ledger was gone.",
           "timeline_event_links": ["event-ledger-missing"]
         },
         {
           "id": "statement-mara-hidden-access",
-          "summary": "HIDDEN_MARA_ADMITTED_BACKUP_KEY_771",
+          "summary": "I admitted I had access to a backup key. HIDDEN_MARA_ADMITTED_BACKUP_KEY_771",
           "visibility": "hidden",
           "evidence_links": ["evidence-backup-key"],
           "timeline_event_links": ["event-backup-key-used"]
@@ -70,19 +70,19 @@
       "statements": [
         {
           "id": "statement-daniel-hallway",
-          "summary": "Daniel saw a person in a dark coat pass the office corridor near 7:15 PM.",
+          "summary": "I saw a person in a dark coat pass the office corridor near 7:15 PM.",
           "evidence_links": ["evidence-security-still"],
           "timeline_event_links": ["event-corridor-sighting"]
         },
         {
           "id": "statement-daniel-camera-gap",
-          "summary": "Daniel says the rear camera feed cut out for several minutes during the same hour.",
+          "summary": "I noticed the rear camera feed cut out for several minutes during that same hour.",
           "evidence_links": ["evidence-security-still"],
           "timeline_event_links": ["event-camera-gap"]
         },
         {
           "id": "statement-daniel-hidden-id",
-          "summary": "HIDDEN_DANIEL_RECOGNIZED_MARA_882",
+          "summary": "I recognized Mara in the corridor. HIDDEN_DANIEL_RECOGNIZED_MARA_882",
           "visibility": "hidden",
           "timeline_event_links": ["event-corridor-sighting"]
         }
@@ -96,18 +96,18 @@
       "statements": [
         {
           "id": "statement-eli-records",
-          "summary": "Eli says he entered the office only to look for a shipping record requested by his supervisor.",
+          "summary": "I entered the office only to look for a shipping record my supervisor requested.",
           "timeline_event_links": ["event-key-signout"]
         },
         {
           "id": "statement-eli-left-empty",
-          "summary": "Eli says he left the office empty-handed before the ledger was reported missing.",
+          "summary": "I left the office empty-handed before the ledger was reported missing.",
           "evidence_links": ["evidence-security-still"],
           "timeline_event_links": ["event-eli-exits"]
         },
         {
           "id": "statement-eli-hidden-ledger",
-          "summary": "HIDDEN_ELI_SAW_LEDGER_ON_DESK_393",
+          "summary": "I saw the ledger on the desk before I left. HIDDEN_ELI_SAW_LEDGER_ON_DESK_393",
           "visibility": "hidden",
           "timeline_event_links": ["event-eli-exits"]
         }
