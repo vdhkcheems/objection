@@ -124,6 +124,10 @@ class CaseRepository:
             ],
         }
 
+    def get_witness_ids(self, case_id: UUID) -> list[str]:
+        case_file = self.get_case(case_id)
+        return [witness.id for witness in case_file.witnesses]
+
     def get_public_evidence(self, case_id: UUID, evidence_id: str) -> dict[str, Any]:
         case_file = self.get_case(case_id)
         evidence = next(

@@ -68,6 +68,16 @@ def test_witness_detail_returns_public_statements_only() -> None:
     _assert_hidden_strings_absent(payload)
 
 
+def test_witnesses_returns_all_witness_ids_for_case() -> None:
+    payload = _json(client.get(f"/cases/{CASE_ID}/witnesses"))
+
+    assert payload == [
+        "witness-mara-vale",
+        "witness-daniel-cross",
+        "witness-eli-porter",
+    ]
+
+
 def test_evidence_detail_returns_public_links_only() -> None:
     payload = _json(client.get(f"/cases/{CASE_ID}/evidence/evidence-security-still"))
 
