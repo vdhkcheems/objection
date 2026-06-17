@@ -78,6 +78,18 @@ def test_witnesses_returns_all_witness_ids_for_case() -> None:
     ]
 
 
+def test_evidence_returns_all_evidence_ids_for_case() -> None:
+    payload = _json(client.get(f"/cases/{CASE_ID}/evidence"))
+
+    assert payload == [
+        "evidence-key-log",
+        "evidence-security-still",
+        "evidence-inventory-email",
+        "evidence-ledger-appraisal",
+        "evidence-backup-key",
+    ]
+
+
 def test_evidence_detail_returns_public_links_only() -> None:
     payload = _json(client.get(f"/cases/{CASE_ID}/evidence/evidence-security-still"))
 

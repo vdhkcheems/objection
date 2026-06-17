@@ -53,6 +53,17 @@ def get_witness_ids(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
+@router.get("/{case_id}/evidence")
+def get_evidence_ids(
+    case_id: UUID,
+    repository: Annotated[CaseRepository, Depends(get_case_repository)],
+) -> list[str]:
+    try:
+        return repository.get_evidence_ids(case_id)
+    except CaseNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
 @router.get("/{case_id}/evidence/{evidence_id}")
 def get_evidence_detail(
     case_id: UUID,
