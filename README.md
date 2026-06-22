@@ -31,19 +31,23 @@ The first playable version will focus on one handcrafted criminal case and inclu
 
 ## Development Status
 
-This project is in early development. The current focus is building the foundation:
+Phase 1 is complete. The project now has a locked, JSON-backed case file schema validated by Pydantic, with one handcrafted demo case: **The Missing Ledger**.
 
-1. Case and evidence models
-2. Courtroom state-machine logic
-3. Witness and judge reasoning systems
-4. Web game interface
-5. LLM-based dialogue agents after the core rules are working
+The backend currently provides player-safe case data only:
+
+- UUID-backed case IDs
+- Charges and legal elements
+- Public witness profiles and statements
+- Public evidence and timeline data
+- Hidden facts, contradictions, and internal notes retained in the locked case file but excluded from public responses
+
+The web app displays this public case overview as a read-only dashboard. Trial flow, questioning, evidence presentation, objections, scoring, verdicts, and LLM dialogue are intentionally deferred to later phases.
 
 See the full phased roadmap in [docs/implementation-plan.md](docs/implementation-plan.md).
 
 ## Local Development
 
-Phase 0 uses a Next.js frontend and FastAPI backend.
+The project uses a Next.js frontend and FastAPI backend.
 
 ```bash
 npm install
@@ -56,3 +60,27 @@ npm run dev
 
 The web app runs at [http://localhost:3000](http://localhost:3000).
 The API health endpoint runs at [http://localhost:8000/health](http://localhost:8000/health).
+
+## Current API
+
+The demo case currently uses the UUID `d6f8a523-4163-4c94-a83b-b9c7f11e9a02`.
+
+- `GET /health`
+- `GET /cases`
+- `GET /cases/{case_id}/overview`
+- `GET /cases/{case_id}/witnesses`
+- `GET /cases/{case_id}/witnesses/{witness_id}`
+- `GET /cases/{case_id}/evidence`
+- `GET /cases/{case_id}/evidence/{evidence_id}`
+
+All case endpoints expose public data only. Requests for hidden witness or evidence details return `404`.
+
+## Verification
+
+```bash
+npm run test:api
+npm run lint:web
+npm run build:web
+```
+
+`npm run test:api` validates case-file schema rules, reference integrity, UUID case IDs, API error handling, and redaction of hidden facts.

@@ -124,13 +124,21 @@ class CaseRepository:
             ],
         }
 
-    def get_witness_ids(self, case_id: UUID) -> list[str]:
+    def get_public_witness_ids(self, case_id: UUID) -> list[str]:
         case_file = self.get_case(case_id)
-        return [witness.id for witness in case_file.witnesses]
+        return [
+            witness.id
+            for witness in case_file.witnesses
+            if witness.visibility == Visibility.PUBLIC
+        ]
 
-    def get_evidence_ids(self, case_id: UUID) -> list[str]:
+    def get_public_evidence_ids(self, case_id: UUID) -> list[str]:
         case_file = self.get_case(case_id)
-        return [evidence.id for evidence in case_file.evidence]
+        return [
+            evidence.id
+            for evidence in case_file.evidence
+            if evidence.visibility == Visibility.PUBLIC
+        ]
 
     def get_public_evidence(self, case_id: UUID, evidence_id: str) -> dict[str, Any]:
         case_file = self.get_case(case_id)

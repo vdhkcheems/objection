@@ -43,23 +43,23 @@ def get_witness_detail(
 
 
 @router.get("/{case_id}/witnesses")
-def get_witness_ids(
+def get_public_witness_ids(
     case_id: UUID,
     repository: Annotated[CaseRepository, Depends(get_case_repository)],
 ) -> list[str]:
     try:
-        return repository.get_witness_ids(case_id)
+        return repository.get_public_witness_ids(case_id)
     except CaseNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @router.get("/{case_id}/evidence")
-def get_evidence_ids(
+def get_public_evidence_ids(
     case_id: UUID,
     repository: Annotated[CaseRepository, Depends(get_case_repository)],
 ) -> list[str]:
     try:
-        return repository.get_evidence_ids(case_id)
+        return repository.get_public_evidence_ids(case_id)
     except CaseNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
